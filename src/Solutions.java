@@ -14,6 +14,8 @@ public class Solutions {
 	private static final String DELETE_SOLUTION_STATEMENT = "DELETE FROM WARSZTATY2.solutions WHERE id= ?";
 	private static final String FIND_SOLUTION_BY_ID_QUERY = "SELECT * FROM WARSZTATY2.solutions where id=?";
 	private static final String FIND_ALL_SOLUTIONS = "SELECT * FROM WARSZTATY2.solutions";
+	private static final String FIND_ALL_SOLUTIONS_BY_USER_ID = "SELECT * FROM WARSZTATY2.solutions where users_id = ?";
+	private static final String FIND_ALL_SOLUTIONS_BY_EXERCISE_ID = "SELECT * FROM WARSZTATY2.solutions where exercise_id = ? ORDER BY created desc";
 
 	private static final String ID_COLUMN_NAME = "ID";
 	private static final String CREATED_COLUMN_NAME = "created";
@@ -122,11 +124,42 @@ public class Solutions {
 		return solutions.toArray(sArray);
 	}
 
-	
+	public static Solutions[] loadAllSolutionsByUserId(Connection conn, int id) throws SQLException {
+
+		ArrayList<Solutions> solutionsByUserId = new ArrayList<>();
+
+		PreparedStatement preparedStatement = conn.prepareStatement(FIND_ALL_SOLUTIONS_BY_USER_ID);
+		preparedStatement.setInt(1, id);
+		ResultSet resultSet = preparedStatement.executeQuery();
+
+		while (resultSet.next()) {
+			solutionsByUserId.add(createSolution(resultSet));
+		}
+
+		Solutions[] sByIdArray = new Solutions[solutionsByUserId.size()];
+		return solutionsByUserId.toArray(sByIdArray);
+	}
+
+	public static Solutions[] loadAllSolutionsByExerciseId(Connection conn, int id) throws SQLException {
+
+		ArrayList<Solutions> solutionsByExerciseId = new ArrayList<>();
+
+		PreparedStatement preparedStatement = conn.prepareStatement(FIND_ALL_SOLUTIONS_BY_EXERCISE_ID);
+		preparedStatement.setInt(1, id);
+		ResultSet resultSet = preparedStatement.executeQuery();
+
+		while (resultSet.next()) {
+			solutionsByExerciseId.add(createSolution(resultSet));
+		}
+
+		Solutions[] sByExIdArray = new Solutions[solutionsByExerciseId.size()];
+		return solutionsByExerciseId.toArray(sByExIdArray);
+	}
+
 	@Override
 	public String toString() {
-		return "Solutions: id = " + id + ", created = " + created + ", updated = " + updated + ", description = " + description
-				+ ", exercieId = " + exercieId + ", usersId = " + usersId;
+		return "Solutions: id = " + id + ", created = " + created + ", updated = " + updated + ", description = "
+				+ description + ", exercieId = " + exercieId + ", usersId = " + usersId;
 	}
 
 	public static void main(String[] args) throws SQLException {
@@ -135,6 +168,12 @@ public class Solutions {
 
 			Solutions[] solutions = Solutions.loadAllSolutions(conn);
 			System.out.println(Arrays.toString(solutions));
+
+			Solutions[] solutionsByUserId = Solutions.loadAllSolutionsByUserId(conn, 0);
+			System.out.println(Arrays.toString(solutionsByUserId));
+			
+			Solutions[] solutionsByExId = Solutions.loadAllSolutionsByExerciseId(conn, 0);
+			System.out.println(Arrays.toString(solutionsByExId));
 		}
 	}
 

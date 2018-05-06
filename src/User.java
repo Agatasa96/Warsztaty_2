@@ -5,7 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-
 import org.mindrot.jbcrypt.BCrypt;
 
 public class User {
@@ -14,6 +13,7 @@ public class User {
 	private static final String DELETE_USER_STATEMENT = "DELETE FROM WARSZTATY2.users WHERE id= ?";
 	private static final String FIND_USER_BY_ID_QUERY = "SELECT * FROM WARSZTATY2.users where id=?";
 	private static final String FIND_ALL_USERS = "SELECT * FROM WARSZTATY2.users";
+	private static final String FIND_USER_BY_GROUP_ID = "SELECT * FROM WARSZTATY2.users where user_group_id =?";
 
 	private static final String PASSWORD_COLUMN_NAME = "password";
 	private static final String ID_COLUMN_NAME = "ID";
@@ -88,7 +88,6 @@ public class User {
 		this.password = BCrypt.hashpw(password, BCrypt.gensalt());
 	}
 
-	
 	public static User loadUserById(Connection conn, long id) throws SQLException {
 
 		PreparedStatement preparedStatement = conn.prepareStatement(FIND_USER_BY_ID_QUERY);
@@ -101,7 +100,7 @@ public class User {
 		return null;
 
 	}
-	
+
 	public static User createUser(ResultSet resultSet) throws SQLException {
 
 		String username = resultSet.getString(USERNAME_COLUMN_NAME);
@@ -113,7 +112,6 @@ public class User {
 		return loadedUser;
 
 	}
-
 
 	public static User[] loadAllUsers(Connection conn) throws SQLException {
 
@@ -128,6 +126,22 @@ public class User {
 
 		User[] uArray = new User[users.size()];
 		return users.toArray(uArray);
+	}
+
+	public static User[] loadAllUsersByGroupId(Connection conn, int id) throws SQLException {
+
+		ArrayList<User> usersByGroupId = new ArrayList<>();
+
+		PreparedStatement preparedStatement = conn.prepareStatement(FIND_USER_BY_GROUP_ID);
+		preparedStatement.setInt(1, id);
+		ResultSet resultSet = preparedStatement.executeQuery();
+
+		while (resultSet.next()) {
+			usersByGroupId.add(createUser(resultSet));
+		}
+
+		User[] uByGrIdArray = new User[usersByGroupId.size()];
+		return usersByGroupId.toArray(uByGrIdArray);
 	}
 
 	@Override
