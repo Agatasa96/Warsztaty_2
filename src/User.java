@@ -4,7 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
+
 
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -88,18 +88,7 @@ public class User {
 		this.password = BCrypt.hashpw(password, BCrypt.gensalt());
 	}
 
-	public static User createUser(ResultSet resultSet) throws SQLException {
-
-		String username = resultSet.getString(USERNAME_COLUMN_NAME);
-		String password = resultSet.getString(PASSWORD_COLUMN_NAME);
-		String email = resultSet.getString(EMAIL_COLUMN_NAME);
-		User loadedUser = new User(username, email, password);
-		loadedUser.id = resultSet.getLong(ID_COLUMN_NAME);
-
-		return loadedUser;
-
-	}
-
+	
 	public static User loadUserById(Connection conn, long id) throws SQLException {
 
 		PreparedStatement preparedStatement = conn.prepareStatement(FIND_USER_BY_ID_QUERY);
@@ -112,6 +101,19 @@ public class User {
 		return null;
 
 	}
+	
+	public static User createUser(ResultSet resultSet) throws SQLException {
+
+		String username = resultSet.getString(USERNAME_COLUMN_NAME);
+		String password = resultSet.getString(PASSWORD_COLUMN_NAME);
+		String email = resultSet.getString(EMAIL_COLUMN_NAME);
+		User loadedUser = new User(username, email, password);
+		loadedUser.id = resultSet.getLong(ID_COLUMN_NAME);
+
+		return loadedUser;
+
+	}
+
 
 	public static User[] loadAllUsers(Connection conn) throws SQLException {
 
@@ -140,9 +142,8 @@ public class User {
 			// dodwanie nowego Usera
 			// User u1 = new User("username1", "email1@wp.pl", "123");
 			// u1.saveNewUser(conn);
-			 User[] users = User.loadAllUsers(conn);
-
-		      System.out.println(Arrays.toString(users));
+			// User[] users = User.loadAllUsers(conn);
+			// System.out.println(Arrays.toString(users));
 		}
 	}
 
