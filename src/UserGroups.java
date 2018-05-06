@@ -107,6 +107,13 @@ public class UserGroups {
 		UserGroups[] ugArray = new UserGroups[userGroups.size()];
 		return userGroups.toArray(ugArray);
 	}
+	
+	
+
+	@Override
+	public String toString() {
+		return "UserGroups: id = " + id + ", name = " + name;
+	}
 
 	public static void main(String[] args) throws SQLException {
 

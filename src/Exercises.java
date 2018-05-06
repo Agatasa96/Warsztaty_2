@@ -112,6 +112,13 @@ public class Exercises {
 		Exercises[] eArray = new Exercises[exercises.size()];
 		return exercises.toArray(eArray);
 	}
+	
+	
+
+	@Override
+	public String toString() {
+		return "Exercises: id = " + id + ", title = " + title + ", description = " + description;
+	}
 
 	public static void main(String[] args) throws SQLException {
 
