@@ -18,7 +18,7 @@ public class Exercises {
 	private static final String ID_COLUMN_NAME = "ID";
 	private static final String DESCRIPTION_COLUMN_NAME = "description";
 
-	private long id;
+	private int id;
 	private String title;
 	private String description;
 
@@ -56,7 +56,7 @@ public class Exercises {
 		PreparedStatement preparedStatement = conn.prepareStatement(UPDATE_EXERCISE_STATEMENT);
 		preparedStatement.setString(1, this.title);
 		preparedStatement.setString(2, this.description);
-		preparedStatement.setLong(3, this.id);
+		preparedStatement.setInt(3, this.id);
 		preparedStatement.executeUpdate();
 
 	}
@@ -65,7 +65,7 @@ public class Exercises {
 
 		if (this.id != 0) {
 			PreparedStatement preparedStatement = conn.prepareStatement(DELETE_EXERCISE_STATEMENT);
-			preparedStatement.setLong(1, this.id);
+			preparedStatement.setInt(1, this.id);
 			preparedStatement.executeUpdate();
 			this.id = 0;
 
@@ -73,10 +73,10 @@ public class Exercises {
 
 	}
 
-	public static Exercises loadExerciseById(Connection conn, long id) throws SQLException {
+	public static Exercises loadExerciseById(Connection conn, int id) throws SQLException {
 
 		PreparedStatement preparedStatement = conn.prepareStatement(FIND_EXERCISE_BY_ID_QUERY);
-		preparedStatement.setLong(1, id);
+		preparedStatement.setInt(1, id);
 		ResultSet resultSet = preparedStatement.executeQuery();
 
 		if (resultSet.next()) {
@@ -92,7 +92,7 @@ public class Exercises {
 		String description = resultSet.getString(DESCRIPTION_COLUMN_NAME);
 
 		Exercises loadedExercise = new Exercises(title, description);
-		loadedExercise.id = resultSet.getLong(ID_COLUMN_NAME);
+		loadedExercise.id = resultSet.getInt(ID_COLUMN_NAME);
 
 		return loadedExercise;
 
