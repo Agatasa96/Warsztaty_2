@@ -171,7 +171,7 @@ public class Solutions {
 	@Override
 	public String toString() {
 		return "Solutions: id = " + id + ", created = " + created + ", updated = " + updated + ", description = "
-				+ description + ", exercieId = " + exercieId + ", usersId = " + usersId;
+				+ description + ", exercieId = " + exercieId + ", usersId = " + usersId + "\n";
 	}
 
 	public static void main(String[] args) throws SQLException {

@@ -119,7 +119,7 @@ public class UserGroups {
 
 	@Override
 	public String toString() {
-		return "UserGroups: id = " + id + ", name = " + name;
+		return "UserGroups: id = " + id + ", name = " + name+ "\n";
 	}
 
 	public static void main(String[] args) throws SQLException {
