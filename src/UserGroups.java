@@ -23,6 +23,9 @@ public class UserGroups {
 		this.name = name;
 
 	}
+	public UserGroups() {
+	
+	}
 
 	public void save(Connection conn) throws SQLException {
 
@@ -109,6 +112,10 @@ public class UserGroups {
 	}
 	
 	
+
+	public int getId() {
+		return id;
+	}
 
 	@Override
 	public String toString() {

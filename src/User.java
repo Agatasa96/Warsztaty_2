@@ -8,30 +8,34 @@ import java.util.ArrayList;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class User {
-	private static final String INSERT_USER_STATEMENT = "INSERT INTO WARSZTATY2.users(username, email, password) VALUES (?, ?, ?)";
-	private static final String UPDATE_USER_STATEMENT = "UPDATE WARSZTATY2.users SET username=?, email=?, password=? where id = ?";
+	private static final String INSERT_USER_STATEMENT = "INSERT INTO WARSZTATY2.users(username, email, password, user_group_id) VALUES (?, ?, ?, ?)";
+	private static final String UPDATE_USER_STATEMENT = "UPDATE WARSZTATY2.users SET username=?, email=?, password=?, user_group_id=? where id = ?";
 	private static final String DELETE_USER_STATEMENT = "DELETE FROM WARSZTATY2.users WHERE id= ?";
 	private static final String FIND_USER_BY_ID_QUERY = "SELECT * FROM WARSZTATY2.users where id=?";
 	private static final String FIND_ALL_USERS = "SELECT * FROM WARSZTATY2.users";
-	private static final String FIND_USER_BY_GROUP_ID = "SELECT * FROM WARSZTATY2.users where user_group_id =?";
+	private static final String FIND_USER_BY_GROUP_ID = "SELECT * FROM WARSZTATY2.users where warsztaty2.users.user_group_id =?";
 
 	private static final String PASSWORD_COLUMN_NAME = "password";
 	private static final String ID_COLUMN_NAME = "ID";
 	private static final String USERNAME_COLUMN_NAME = "username";
 	private static final String EMAIL_COLUMN_NAME = "email";
+	private static final String USER_GROUP_COLUMN_NAME = "user_group_id";
 
 	private long id;
 	private String username;
 	private String email;
 	private String password;
 	private int userGroupId;
+ 
 
-	public User(String username, String email, String password) {
+	public User(String username, String email, String password, int userGroupId) {
 		this.username = username;
 		this.email = email;
 		setPassword(password);
-
+		this.userGroupId = userGroupId;
+		
 	}
+	
 
 	public void save(Connection conn) throws SQLException {
 
@@ -51,12 +55,13 @@ public class User {
 		preparedStatement.setString(1, this.username);
 		preparedStatement.setString(2, this.email);
 		preparedStatement.setString(3, this.password);
+		preparedStatement.setInt(4, this.userGroupId);
 		preparedStatement.executeUpdate();
 		ResultSet rs = preparedStatement.getGeneratedKeys(); // zwraca
 																// wygenerowane
 																// klucze
 		if (rs.next()) {
-			this.id = rs.getInt(1); // pobieramy indeks wygenerowany auto w
+			this.id = rs.getLong(1); // pobieramy indeks wygenerowany auto w
 									// DB
 		}
 	}
@@ -67,12 +72,13 @@ public class User {
 		preparedStatement.setString(1, this.username);
 		preparedStatement.setString(2, this.email);
 		preparedStatement.setString(3, this.password);
-		preparedStatement.setLong(4, this.id);
+		preparedStatement.setInt(4, this.userGroupId);
+		preparedStatement.setLong(5, this.id);
 		preparedStatement.executeUpdate();
 
 	}
 
-	public void delete(Connection conn) throws SQLException {
+	public void delete (Connection conn) throws SQLException {
 
 		if (this.id != 0) {
 			PreparedStatement preparedStatement = conn.prepareStatement(DELETE_USER_STATEMENT);
@@ -106,7 +112,8 @@ public class User {
 		String username = resultSet.getString(USERNAME_COLUMN_NAME);
 		String password = resultSet.getString(PASSWORD_COLUMN_NAME);
 		String email = resultSet.getString(EMAIL_COLUMN_NAME);
-		User loadedUser = new User(username, email, password);
+		int userGroupId = resultSet.getInt(USER_GROUP_COLUMN_NAME);
+		User loadedUser = new User(username, email, password, userGroupId );
 		loadedUser.id = resultSet.getLong(ID_COLUMN_NAME);
 
 		return loadedUser;
@@ -147,15 +154,61 @@ public class User {
 	@Override
 	public String toString() {
 		return "User: id = " + id + ", username = " + username + ", email = " + email + ", password = " + password
-				+ ", userGroupId = " + userGroupId + "/n";
+				+ ", userGroupId = " + userGroupId + "\n";
 	}
+
+	
+	public long getId() {
+		return id;
+	}
+	
+
+	public String getUsername() {
+		return username;
+	}
+
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+
+	public String getEmail() {
+		return email;
+	}
+
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+
+	public int getUserGroupId() {
+		return userGroupId;
+	}
+
+
+	public void setUserGroupId(int userGroupId) {
+		this.userGroupId = userGroupId;
+	}
+
+
+	public String getPassword() {
+		return password;
+	}
+
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
 
 	public static void main(String[] args) throws SQLException {
 
 		try (Connection conn = DBUtils.createConnection()) {
 			// dodwanie nowego Usera
-			// User u1 = new User("username1", "email1@wp.pl", "123");
-			// u1.saveNewUser(conn);
+			 User u1 = new User("username1", "email111@wp.pl", "123", 1);
+			 u1.delete(conn);
 			// User[] users = User.loadAllUsers(conn);
 			// System.out.println(Arrays.toString(users));
 		}

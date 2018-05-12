@@ -119,6 +119,13 @@ public class Exercises {
 	public String toString() {
 		return "Exercises: id = " + id + ", title = " + title + ", description = " + description;
 	}
+	
+	
+
+	public int getId() {
+		return id;
+	}
+
 
 	public static void main(String[] args) throws SQLException {
 
