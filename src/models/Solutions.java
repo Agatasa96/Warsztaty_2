@@ -1,3 +1,4 @@
+package models;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -174,19 +175,5 @@ public class Solutions {
 				+ description + ", exercieId = " + exercieId + ", usersId = " + usersId + "\n";
 	}
 
-	public static void main(String[] args) throws SQLException {
-
-		try (Connection conn = DBUtils.createConnection()) {
-
-			Solutions[] solutions = Solutions.loadAllSolutions(conn);
-			System.out.println(Arrays.toString(solutions));
-
-			Solutions[] solutionsByUserId = Solutions.loadAllSolutionsByUserId(conn, 0);
-			System.out.println(Arrays.toString(solutionsByUserId));
-			
-			Solutions[] solutionsByExId = Solutions.loadAllSolutionsByExerciseId(conn, 0);
-			System.out.println(Arrays.toString(solutionsByExId));
-		}
-	}
 
 }

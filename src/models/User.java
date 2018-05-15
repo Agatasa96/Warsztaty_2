@@ -1,3 +1,4 @@
+package models;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -26,16 +27,14 @@ public class User {
 	private String email;
 	private String password;
 	private int userGroupId;
- 
 
 	public User(String username, String email, String password, int userGroupId) {
 		this.username = username;
 		this.email = email;
 		setPassword(password);
 		this.userGroupId = userGroupId;
-		
+
 	}
-	
 
 	public void save(Connection conn) throws SQLException {
 
@@ -62,7 +61,7 @@ public class User {
 																// klucze
 		if (rs.next()) {
 			this.id = rs.getLong(1); // pobieramy indeks wygenerowany auto w
-									// DB
+										// DB
 		}
 	}
 
@@ -78,7 +77,7 @@ public class User {
 
 	}
 
-	public void delete (Connection conn) throws SQLException {
+	public void delete(Connection conn) throws SQLException {
 
 		if (this.id != 0) {
 			PreparedStatement preparedStatement = conn.prepareStatement(DELETE_USER_STATEMENT);
@@ -113,7 +112,7 @@ public class User {
 		String password = resultSet.getString(PASSWORD_COLUMN_NAME);
 		String email = resultSet.getString(EMAIL_COLUMN_NAME);
 		int userGroupId = resultSet.getInt(USER_GROUP_COLUMN_NAME);
-		User loadedUser = new User(username, email, password, userGroupId );
+		User loadedUser = new User(username, email, password, userGroupId);
 		loadedUser.id = resultSet.getLong(ID_COLUMN_NAME);
 
 		return loadedUser;
@@ -157,61 +156,41 @@ public class User {
 				+ ", userGroupId = " + userGroupId + "\n";
 	}
 
-	
 	public long getId() {
 		return id;
 	}
-	
 
 	public String getUsername() {
 		return username;
 	}
 
-
 	public void setUsername(String username) {
 		this.username = username;
 	}
-
 
 	public String getEmail() {
 		return email;
 	}
 
-
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
 
 	public int getUserGroupId() {
 		return userGroupId;
 	}
 
-
 	public void setUserGroupId(int userGroupId) {
 		this.userGroupId = userGroupId;
 	}
-
 
 	public String getPassword() {
 		return password;
 	}
 
-
 	public void setId(long id) {
 		this.id = id;
 	}
 
-
-	public static void main(String[] args) throws SQLException {
-
-		try (Connection conn = DBUtils.createConnection()) {
-			// dodwanie nowego Usera
-			 User u1 = new User("username1", "email111@wp.pl", "123", 1);
-			 u1.delete(conn);
-			// User[] users = User.loadAllUsers(conn);
-			// System.out.println(Arrays.toString(users));
-		}
-	}
-
+	
 }

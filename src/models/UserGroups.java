@@ -1,3 +1,4 @@
+package models;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -122,13 +123,5 @@ public class UserGroups {
 		return "UserGroups: id = " + id + ", name = " + name+ "\n";
 	}
 
-	public static void main(String[] args) throws SQLException {
-
-		try (Connection conn = DBUtils.createConnection()) {
-
-			UserGroups[] userGroups = UserGroups.loadAllUserGroups(conn);
-			System.out.println(Arrays.toString(userGroups));
-		}
-	}
-
+	
 }

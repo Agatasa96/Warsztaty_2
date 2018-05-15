@@ -1,3 +1,4 @@
+package models;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -126,14 +127,5 @@ public class Exercises {
 		return id;
 	}
 
-
-	public static void main(String[] args) throws SQLException {
-
-		try (Connection conn = DBUtils.createConnection()) {
-
-			Exercises[] exercises = Exercises.loadAllExercises(conn);
-			System.out.println(Arrays.toString(exercises));
-		}
-	}
 
 }

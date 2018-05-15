@@ -3,6 +3,10 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Scanner;
 
+import connection.DBUtils;
+import models.User;
+import models.UserGroups;
+
 
 
 public class Main {
