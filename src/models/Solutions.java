@@ -6,17 +6,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Solutions {
 
 	private static final String INSERT_SOLUTION_STATEMENT = "INSERT INTO WARSZTATY2.solutions (created, updated, description, exercise_id, users_id) VALUES (?, ?, ?, ?, ?)";
-	private static final String UPDATE_SOLUTION_STATEMENT = "UPDATE WARSZTATY2.solutions SET created=?, updated=?, description=?, exercise_id=? users_id=? where id = ?";
+	private static final String CHANGE_SOLUTION_STATEMENT = "UPDATE WARSZTATY2.solutions SET created=?, updated=?, description=?, exercise_id=? users_id=? where id = ?";
+	private static final String UPDATE_SOLUTION_STATEMENT = "UPDATE WARSZTATY2.solutions SET updated=?, description=? where id = ?";
 	private static final String DELETE_SOLUTION_STATEMENT = "DELETE FROM WARSZTATY2.solutions WHERE id= ?";
 	private static final String FIND_SOLUTION_BY_ID_QUERY = "SELECT * FROM WARSZTATY2.solutions where id=?";
 	private static final String FIND_ALL_SOLUTIONS = "SELECT * FROM WARSZTATY2.solutions";
 	private static final String FIND_ALL_SOLUTIONS_BY_USER_ID = "SELECT * FROM WARSZTATY2.solutions where users_id = ?";
 	private static final String FIND_ALL_SOLUTIONS_BY_EXERCISE_ID = "SELECT * FROM WARSZTATY2.solutions where exercise_id = ? ORDER BY created desc";
+	private static final String FIND_ALL_EXERCISES_WITHOUT_SOLUTION = "SELECT * FROM WARSZTATY2.solutions where users_id = ? and updated is null";
+	private static final String FIND_ALL_SOLUTIONS_BY_USER_ID_AND_EX_ID = "SELECT * FROM WARSZTATY2.solutions where users_id = ? and exercise_id = ?";
 
 	private static final String ID_COLUMN_NAME = "ID";
 	private static final String CREATED_COLUMN_NAME = "created";
@@ -24,14 +26,13 @@ public class Solutions {
 	private static final String DESCRIPTION_COLUMN_NAME = "description";
 	private static final String EXERCISE_ID_COLUMN_NAME = "exercise_id";
 	private static final String USERS_ID_COLUMN_NAME = "users_id";
-	
+
 	private int id;
 	private Date created;
 	private Date updated;
 	private String description;
 	private int exercieId;
 	private long usersId;
-	
 
 	public Solutions(Date created, Date updated, String description, int exerciseId, long userId) {
 		this.created = created;
@@ -47,10 +48,12 @@ public class Solutions {
 			saveNewSolutions(conn);
 
 		} else {
-			updateSolutions(conn);
+			changeSolution(conn);
 		}
 
 	}
+	
+
 
 	private void saveNewSolutions(Connection conn) throws SQLException {
 		String generatedColumns[] = { ID_COLUMN_NAME };
@@ -68,9 +71,9 @@ public class Solutions {
 		}
 	}
 
-	private void updateSolutions(Connection conn) throws SQLException {
+	private void changeSolution(Connection conn) throws SQLException {
 
-		PreparedStatement preparedStatement = conn.prepareStatement(UPDATE_SOLUTION_STATEMENT);
+		PreparedStatement preparedStatement = conn.prepareStatement(CHANGE_SOLUTION_STATEMENT);
 		preparedStatement.setDate(1, this.created);
 		preparedStatement.setDate(2, this.updated);
 		preparedStatement.setString(3, this.description);
@@ -80,6 +83,19 @@ public class Solutions {
 		preparedStatement.executeUpdate();
 
 	}
+	
+	public void updateSolutions(Connection conn) throws SQLException {
+
+		PreparedStatement preparedStatement = conn.prepareStatement(UPDATE_SOLUTION_STATEMENT);
+		
+		preparedStatement.setDate(1, this.updated);
+		preparedStatement.setString(2, this.description);
+		preparedStatement.setInt(3, this.id);
+		preparedStatement.executeUpdate();
+
+	}
+	
+	
 
 	public void delete(Connection conn) throws SQLException {
 
@@ -113,7 +129,6 @@ public class Solutions {
 		String description = resultSet.getString(DESCRIPTION_COLUMN_NAME);
 		int exerciseId = resultSet.getInt(EXERCISE_ID_COLUMN_NAME);
 		long userId = resultSet.getLong(USERS_ID_COLUMN_NAME);
-		
 
 		Solutions loadedSolution = new Solutions(created, updated, description, exerciseId, userId);
 		loadedSolution.id = resultSet.getInt(ID_COLUMN_NAME);
@@ -169,11 +184,56 @@ public class Solutions {
 		return solutionsByExerciseId.toArray(sByExIdArray);
 	}
 
+	public static Solutions[] loadAllExercisesWithoutSolution(Connection conn, int id) throws SQLException {
+
+		ArrayList<Solutions> exercisesWithoutSolution = new ArrayList<>();
+
+		PreparedStatement preparedStatement = conn.prepareStatement(FIND_ALL_EXERCISES_WITHOUT_SOLUTION);
+		preparedStatement.setInt(1, id);
+		ResultSet resultSet = preparedStatement.executeQuery();
+
+		while (resultSet.next()) {
+			exercisesWithoutSolution.add(createSolution(resultSet));
+		}
+
+		Solutions[] exWithoutSolution = new Solutions[exercisesWithoutSolution.size()];
+		return exercisesWithoutSolution.toArray(exWithoutSolution);
+	}
+
+	public static Solutions loadSolutionByExIdAndUserId(Connection conn, int userId, int exerciseId)
+			throws SQLException {
+
+		PreparedStatement preparedStatement = conn.prepareStatement(FIND_ALL_SOLUTIONS_BY_USER_ID_AND_EX_ID);
+		preparedStatement.setInt(1, userId);
+		preparedStatement.setInt(2, exerciseId);
+		ResultSet resultSet = preparedStatement.executeQuery();
+
+		if (resultSet.next()) {
+			return createSolution(resultSet);
+		}
+		return null;
+
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
+
+	public void setUpdated(Date updated) {
+		this.updated = updated;
+	}
+	
+	
+
+	public String getDescription() {
+		return description;
+	}
+
 	@Override
 	public String toString() {
 		return "Solutions: id = " + id + ", created = " + created + ", updated = " + updated + ", description = "
 				+ description + ", exercieId = " + exercieId + ", usersId = " + usersId + "\n";
 	}
-
 
 }

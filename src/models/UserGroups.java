@@ -4,7 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
+
 
 public class UserGroups {
 
@@ -117,7 +117,11 @@ public class UserGroups {
 	public int getId() {
 		return id;
 	}
+	
 
+	public void setName(String name) {
+		this.name = name;
+	}
 	@Override
 	public String toString() {
 		return "UserGroups: id = " + id + ", name = " + name+ "\n";
